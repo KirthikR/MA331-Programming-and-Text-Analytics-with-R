@@ -1,0 +1,142 @@
+---
+title: "MA331-Report: 2213380"
+subtitle: "TED Talks by Speaker Sugata Mitra and Speaker mariano sigman"
+author: "Ramadoss, Kirthik"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+### Don't delete this setup code chunk from your file
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, comment = NULL)   ## DON'T ALTER THIS: this is to prevent printing the code or any unnecessary addition in your final "html" report file.
+
+# You can extend this list below to load all the packages required for your analyses:
+#====================================================================================
+library(dsEssex)
+library(tidyverse)
+library(tidytext)
+library(plotly)
+library(ggrepel)
+
+# load the 'ted_talks' data
+#=========================
+data(ted_talks)
+```
+
+
+
+## Introduction
+In order to extract insights and trends from massive amounts of unstructured text—text that does not follow a predetermined format—text analytics uses a variety of machine learning, statistical, and linguistic techniques. It makes it possible for organizations, governments, academics, and the media to use the vast material at their command to make important choices. Sentiment analysis, subject modeling, named entity identification, word frequency, and event extraction are just a few of the methods used in text analytics.Sugata Mitra, a scholar in education, is the recipient of the 2013 TED Prize. His desire was to create a school in the cloud where kids could learn from one another and investigate and in 2016 Neuroscientist Mariano Sigman shares his life's work investigating the interior workings of the human brain in his intriguing, mind-bending novel "The Secret Life of the Mind."
+
+
+## Methods
+The methods are as follow:
+* tidying and tokenaisation , tidying is nothing but A common method of linking a dataset's organisation is provided by tidy dataset and tokenaisation means the breaking of the words into specified manner.
+*Stopwords removal, that means removing of all stopwords like i, and , if from the data.
+*Next identification of stopwords of speaker words seperatly, that means identifing speakers stopwords 
+*next step is visualization of stopwords. The visual representation of data in the shape of a graph, chart, bar graph, or any other style is known as data visualisation and is an essential component of data analysis. 
+*In the next step I just visualised for speakers separetly.
+*And then comparing the speakers words by data visualization.
+
+## Results
+
+The result I have got for this data is by using the above methods.I just gathered the information about speakers "Sugata Mitra" and "Mariano Sigman" from the website tidy_talks and I rephared it here.
+
+```{r}
+Myfile <- ted_talks %>%
+filter(speaker %in% c("Sugata Mitra", "Mariano Sigman"))
+
+
+#Use the unnest_tokens() function in tidytext to tokenize and tidy the ted_talks data in single words.
+
+
+Tidy_speech <- Myfile %>%
+  tidytext::unnest_tokens(word, text)
+ 
+ 
+#Stopwords Elimination
+ted_talk_Programme <- Tidy_speech  %>%
+  dplyr::anti_join(get_stopwords())
+
+
+
+#the best phrases used by particular speakers identified
+Sugata_speech <- ted_talk_Programme %>%
+  dplyr::filter(speaker == "Sugata Mitra") %>%
+  dplyr::count(speaker, word, sort = TRUE)
+```
+
+### best phrases displayed visually
+
+```{r}
+#the best phrases displayed visually
+Sugata_speech %>%
+  dplyr::slice_max(n, n = 25) %>%
+  dplyr::mutate(word = reorder(word, n)) %>%
+  ggplot2::ggplot(aes(n, word)) + ggplot2::geom_col()
+```
+
+
+### plotting the speaker words
+```{r}
+#the best phrases used by particular speakers identified
+Mariano_speech <- ted_talk_Programme %>%
+  dplyr::filter(speaker == "Mariano Sigman") %>%
+  dplyr::count(speaker, word, sort = TRUE)
+ 
+#the best phrases displayed visually
+Mariano_speech %>%
+  dplyr::slice_max(n, n = 25) %>%
+  dplyr::mutate(word = reorder(word, n)) %>%
+  ggplot2::ggplot(aes(n, word)) + ggplot2::geom_col()
+```  
+
+
+### Common words plotting between two speakers
+```{r}
+#Visualization is used to compare speaker phrases
+ 
+library(ggrepel)
+
+
+dplyr::bind_rows(Sugata_speech,Mariano_speech) %>%
+  group_by(word) %>%
+  filter(sum(n) > 10) %>%
+  ungroup() %>%
+  pivot_wider(names_from = "speaker", values_from = "n", values_fill = 0) %>%
+  ggplot(aes(`Sugata Mitra`, `Mariano Sigman`)) +
+  geom_abline(color = "violet", size = 1.2, alpha = 0.75,  lty = 3) +
+  geom_text_repel(aes(label = word), max.overlaps = 15) +
+  coord_fixed()
+```
+
+
+### Positive and negative words split
+
+```{r}
+#Sentiment evaluation
+ted_talk_Programme %>%
+  inner_join(get_sentiments("nrc"), by = "word")
+ 
+#to tally the speaker-specific sentiment counts and show the results in a large format with the speaker-specific sentiment counts parenthesized in sections.
+
+ted_talk_Programme %>%
+  inner_join(get_sentiments("nrc"), by = "word") %>%
+  count(speaker, sentiment) %>%
+  pivot_wider(names_from = speaker, values_from = n, values_fill = 0)
+```
+### sentimental analysis plotting
+
+```{r}
+library(dsEssex)
+
+ted_talk_Programme %>%
+  inner_join(get_sentiments("nrc"), by = "word") %>%
+  count(speaker, sentiment) %>%
+  pivot_wider(names_from = speaker, values_from = n, values_fill = 0) %>%
+  mutate(OR = dsEssex::compute_OR(`Sugata Mitra`, `Mariano Sigman`, correction = FALSE), log_OR = log(OR), sentiment = reorder(sentiment, log_OR)) %>%
+  ggplot(aes(sentiment, log_OR, fill = log_OR < 0)) +
+  geom_col(show.legend = FALSE) +
+  ylab("Log odds ratio") + ggtitle("Sentiments and tweets") +
+  coord_flip() +
+  scale_fill_manual(name = "", values = c("yellow", "blue"))
+```
