@@ -1,41 +1,30 @@
 # MA331-Programming-and-Text-Analytics-with-R
 
-# Section 1: Introduction
 
-This part provides a brief introduction to the text analytics methods used in the analysis. It mentions the importance of text analytics in extracting insights from unstructured text data and lists some of the techniques like sentiment analysis, subject modeling, etc.
+## Introduction
 
-# Section 2: Methods
+The purpose of this project is to analyze TED Talks delivered by speakers Sugata Mitra and Mariano Sigman using text analytics techniques. By examining the content of these talks, we aim to uncover key phrases, sentiments, and trends discussed by the speakers.
 
-In this section, the methods used for text analysis are outlined:
+## Methods
 
-Tidying and Tokenization: It uses the unnest_tokens() function from the tidytext package to tokenize and tidy the ted_talks data into single words.
+The methods employed in this analysis include:
 
-Stopwords Removal: It eliminates common English stopwords from the tokenized data.
+- **Tidying and Tokenization**: The TED Talks data is tidied and tokenized to break the text into individual words, facilitating further analysis.
+- **Stopwords Removal**: Common stopwords such as "I", "and", "if" are removed from the text data to focus on meaningful words.
+- **Identification of Speaker-Specific Words**: Words used specifically by Sugata Mitra and Mariano Sigman are identified separately for analysis.
+- **Visualization**: The identified words and phrases are visualized using graphs and charts to gain insights into the most frequently used terms by each speaker.
+- **Comparison of Speaker Words**: The words used by Sugata Mitra and Mariano Sigman are compared visually to identify commonalities and differences in their speech.
 
-Identification of Speaker-specific Stopwords: It identifies stopwords specific to each speaker.
+## Results
 
-Visualization of Stopwords: It creates visual representations of stopwords using data visualization techniques.
+The results of the analysis are as follows:
 
-Visualization for Speakers Separately: It visualizes stopwords for each speaker separately.
+- **Best Phrases Displayed Visually**: Bar plots display the top phrases used by Sugata Mitra and Mariano Sigman, highlighting the most frequently mentioned terms by each speaker.
+- **Speaker Words Plotting**: Bar plots visualize the most commonly used words by each speaker, providing insights into their speech patterns.
+- **Common Words Plotting between Two Speakers**: A comparison of common words used by Sugata Mitra and Mariano Sigman is visualized to identify overlaps and distinctions in their vocabulary.
+- **Sentiment Analysis**: Sentiment analysis evaluates the emotional tone of the TED Talks content, categorizing words into positive and negative sentiments. The sentiment analysis results are visualized to compare the sentiment distributions between the two speakers.
 
-Comparison of Speaker Words: It compares the words used by different speakers through data visualization.
+## Conclusion
 
-# Section 3: Results
+In conclusion, this project utilizes text analytics techniques to analyze TED Talks delivered by Sugata Mitra and Mariano Sigman. By identifying key phrases, sentiments, and trends in their speeches, we gain insights into their communication styles and the topics they address. This analysis can be valuable for understanding the focus and impact of their presentations.
 
-This part includes the R code that extracts information about specific speakers ("Sugata Mitra" and "Mariano Sigman") from the 'ted_talks' dataset and then displays the best phrases used by them visually.
-
-# Section 4: Plotting Speaker Words
-
-This section plots the best phrases used by each speaker ("Sugata Mitra" and "Mariano Sigman") visually.
-
-# Section 5: Common Words Plotting between Two Speakers
-
-It visualizes common words between two speakers ("Sugata Mitra" and "Mariano Sigman").
-
-# Section 6: Positive and Negative Words Split
-
-This part involves sentiment analysis by evaluating the sentiment of words using the NRC lexicon.
-
-# Section 7: Sentimental Analysis Plotting
-
-This section plots sentiment analysis results, including log odds ratio and sentiment polarity.
